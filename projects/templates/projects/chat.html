@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Real-Time Collaboration for {{ project.title }}</h2>
+
+<div id="chat" style="border: 1px solid #ccc; padding: 10px; width: 60%; margin: 0 auto;">
+    <div id="chat-log" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 5px; margin-bottom: 10px;"></div>
+    <form id="chat-form" data-room-name="{{ project.pk }}">
+        <input id="chat-message-input" type="text" size="100" style="width: 80%;">
+        <input id="chat-message-submit" type="submit" value="Send" style="width: 15%;">
+    </form>
+</div>
+
+<script>
+    const roomName = document.querySelector('#chat-form').dataset.roomName;
+    const chatSocket = new WebSocket(
+        'ws://' + window.location.host + '/ws/chat/' + roomName + '/'
+    );
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        const chatLog = document.querySelector('#chat-log');
+        chatLog.value += (data.message + '\n');
+        chatLog.scrollTop = chatLog.scrollHeight;  // Scroll to the bottom
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#chat-form').onsubmit = function(e) {
+        e.preventDefault();
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': message
+        }));
+        messageInputDom.value = '';
+    };
+</script>
+
+<a href="{% url 'project_detail' project.pk %}">Back to Project</a>
+{% endblock %}

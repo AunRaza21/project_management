@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Workload Tracking for {{ project.title }}</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Team Member</th>
+            <th>Task Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for member, count in workload.items %}
+        <tr>
+            <td>{{ member }}</td>
+            <td>{{ count }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2">No tasks assigned</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'project_detail' project.pk %}">Back to Project</a>
+{% endblock %}

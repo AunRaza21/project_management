@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Gantt Chart for {{ project.title }}</h2>
+
+<div id="gantt_chart" style="width: 100%; height: 500px;"></div>
+
+<!-- Load the Google Charts library -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['gantt']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Task ID');
+        data.addColumn('string', 'Task Name');
+        data.addColumn('string', 'Resource');
+        data.addColumn('date', 'Start Date');
+        data.addColumn('date', 'End Date');
+        data.addColumn('number', 'Duration');
+        data.addColumn('number', 'Percent Complete');
+        data.addColumn('string', 'Dependencies');
+
+        var taskData = JSON.parse('{{ task_data|escapejs }}');
+        taskData.forEach(function(task) {
+            task[3] = new Date(task[3]); // Convert start date to Date object
+            task[4] = new Date(task[4]); // Convert end date to Date object
+        });
+
+        data.addRows(taskData);
+
+        var options = {
+            height: 400,
+            gantt: {
+                trackHeight: 30
+            }
+        };
+
+        var chart = new google.visualization.Gantt(document.getElementById('gantt_chart'));
+        chart.draw(data, options);
+    }
+</script>
+
+<a href="{% url 'project_detail' project.pk %}">Back to Project</a>
+{% endblock %}
