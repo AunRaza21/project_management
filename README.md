@@ -68,9 +68,15 @@ A Django-based web application for project and task management.
 
 - **Admin Interface**: Access the Django admin interface at `http://127.0.0.1:8000/admin` to manage users, projects, and tasks.
 - **Project Management**: Create, update, and delete projects.
+  - URL: `/projects/`
 - **Task Management**: Create, update, and delete tasks within projects. Assign tasks to team members and set dependencies.
+  - URL: `/projects/<project_id>/tasks/`
 - **Gantt Chart**: Visualize project timelines and task dependencies.
+  - URL: `/projects/<project_id>/gantt/`
 - **Workload Tracking**: Track team members' workloads.
+  - URL: `/projects/<project_id>/track_workloads/`
+- **Real-time Collaboration**: Access the chat interface for project discussions and task updates.
+  - URL: `/projects/<project_id>/chat/`
 
 ## License
 
